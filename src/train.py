@@ -4,6 +4,9 @@ from model import get_baseline_model, get_advanced_model
 from evaluate import print_metrics
 
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import mean_absolute_error
+import holidays
 
 
 def temporal_split(df, split_ratio=0.8):
@@ -11,6 +14,68 @@ def temporal_split(df, split_ratio=0.8):
     train = df.iloc[:split_index]
     test = df.iloc[split_index:]
     return train, test
+
+def robustness_analysis(test, y_pred_advanced):
+    print("\n--- Robustness Analysis ---")
+
+    # Reset indices pour que y_pred_advanced corresponde
+    test = test.reset_index(drop=True)
+
+    
+    # Pics de demande
+    mean_demand = test["demand"].mean()
+    std_demand = test["demand"].std()
+    threshold_peak = mean_demand + 2 * std_demand
+    peaks = test[test["demand"] > threshold_peak].reset_index(drop=True)
+
+    if len(peaks) > 0:
+        mae_peaks = mean_absolute_error(peaks["demand"], y_pred_advanced[peaks.index])
+        print(f"Number of peak hours: {len(peaks)}")
+        print(f"MAE on peak hours: {mae_peaks:.2f}")
+
+        # Graphique pics
+        plt.figure(figsize=(12,5))
+        plt.plot(peaks["datetime"], peaks["demand"], label="Réel")
+        plt.plot(peaks["datetime"], y_pred_advanced[peaks.index], label="RF prévision")
+        plt.xlabel("Datetime")
+        plt.ylabel("Demand")
+        plt.title("Prévision vs Réel - Pics de demande")
+        plt.legend()
+        plt.show()
+        plt.pause(0.1)
+    else:
+        print("No peak hours found in test set.")
+
+
+    # Jours fériés
+   
+    us_holidays = holidays.US(years=test["datetime"].dt.year.unique())
+    test["is_holiday"] = test["datetime"].dt.date.isin(us_holidays)
+
+    holidays_data = test[test["is_holiday"]].reset_index(drop=True)
+    normal_data = test[~test["is_holiday"]].reset_index(drop=True)
+
+    if len(holidays_data) > 0:
+        mae_holidays = mean_absolute_error(holidays_data["demand"], y_pred_advanced[holidays_data.index])
+        print(f"MAE on holidays: {mae_holidays:.2f}")
+
+        # Graphique jours fériés
+        plt.figure(figsize=(12,5))
+        plt.plot(holidays_data["datetime"], holidays_data["demand"], label="Réel")
+        plt.plot(holidays_data["datetime"], y_pred_advanced[holidays_data.index], label="RF prévision")
+        plt.xlabel("Datetime")
+        plt.ylabel("Demand")
+        plt.title("Prévision vs Réel - Jours fériés")
+        plt.legend()
+        plt.show()
+        plt.pause(0.1)
+    else:
+        print("No holiday data in the test set to compute MAE or plot.")
+
+    if len(normal_data) > 0:
+        mae_normal = mean_absolute_error(normal_data["demand"], y_pred_advanced[normal_data.index])
+        print(f"MAE on normal days: {mae_normal:.2f}")
+
 
 
 def main():
@@ -60,6 +125,19 @@ def main():
 
     print_metrics("Random Forest", y_test, y_pred_advanced)
 
+    # Graphique général
+    plt.figure(figsize=(12,5))
+    plt.plot(test["datetime"], y_test, label="Réel")
+    plt.plot(test["datetime"], y_pred_advanced, label="RF prévision")
+    plt.xlabel("Datetime")
+    plt.ylabel("Demand")
+    plt.title("Prévision vs Réel - Test Set")
+    plt.legend()
+    plt.show()
+    plt.pause(0.1)
+
+    # Analyse de robustesse
+    robustness_analysis(test, y_pred_advanced)
 
 if __name__ == "__main__":
     main()
