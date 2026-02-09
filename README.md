@@ -65,7 +65,9 @@ Random Forest	73.13	14.72%
 
 Le Random Forest montre une nette amélioration grâce aux features lag et rolling.
 
-6. Analyse de robustesse (Random Forest)
+---
+
+## 5. Analyse de robustesse (Random Forest)
 Catégorie	MAE	Commentaire
 Pics de demande	1214.97	Modèle sous-estime fortement les valeurs extrêmes
 Jours fériés	611.86	Erreurs importantes sur les jours atypiques
