@@ -28,11 +28,7 @@ bike_sharing_project/
 
 1. Cloner le dépôt ou dézipper le projet.
 2. Installer les dépendances Python : pip install -r requirements.txt
-
-Vérifier que les fichiers ZIP sont dans data/raw/ :
-
-data/raw/202401-capitalbikeshare-tripdata.zip
-data/raw/202402-capitalbikeshare-tripdata.zip
+3. Vérifier que les fichiers ZIP sont dans data/raw/
 
 ---
 
