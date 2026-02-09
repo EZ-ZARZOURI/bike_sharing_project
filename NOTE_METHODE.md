@@ -3,8 +3,8 @@
 ## 1. Définition du problème et horizon de prédiction
 
 - **Problème métier** : Prédire la demande horaire de vélos pour optimiser le rééquilibrage et la disponibilité.
-- **Horizon de prédiction** : Prévision horaire (J+1) sur le test set.  
-  - Utile pour un opérateur afin de planifier la redistribution des vélos à chaque heure de la journée.
+- **Horizon de prédiction : Prévision horaire pour l’heure suivante (t+1) sur le test set.
+- **Utilité pour un opérateur : Permet de planifier le rééquilibrage des stations à chaque heure, en s’assurant que les vélos sont disponibles là où la demande sera la plus forte.
 
 ---
 
