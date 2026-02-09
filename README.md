@@ -40,8 +40,7 @@ data/raw/202402-capitalbikeshare-tripdata.zip
 
 Depuis le dossier racine :
 
-cd src
-python train.py
+cd src; python train.py
 
 Le script effectuera :
 
