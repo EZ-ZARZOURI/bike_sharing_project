@@ -27,10 +27,7 @@ bike_sharing_project/
 ## 3. Installation
 
 1. Cloner le dépôt ou dézipper le projet.
-2. Installer les dépendances Python :
-
-```bash
-pip install -r requirements.txt
+2. Installer les dépendances Python : pip install -r requirements.txt
 
 Vérifier que les fichiers ZIP sont dans data/raw/ :
 
